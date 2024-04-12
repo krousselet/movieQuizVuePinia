@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 export const useNavbarStore = defineStore('navbar', {
     state: () => ({
+        logo: require('@/assets/moviequizDarkMod.svg'),
         pages: [
             {
                 //HOME
@@ -11,7 +12,13 @@ export const useNavbarStore = defineStore('navbar', {
                 //ABOUT
                 label: 'Divers',
                 path: '/divers',
+            },
+            {
+                //PLAY
+                label: 'Jouer',
+                path: '/jouer'
             }
+
         ]
     })
 })
