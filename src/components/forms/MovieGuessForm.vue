@@ -1,47 +1,54 @@
 <template>
-    <div class="container my-5">
-      <form @submit.prevent="submitGuess">
-        <div class="mb-3">
-          <label for="movieGuess" class="form-label">Devinez le titre du film</label>
-          <input type="text" class="form-control" id="movieGuess" v-model="userGuess">
-        </div>
-        <button type="submit" class="btn btn-primary">Soumettre</button>
-      </form>
-    </div>
-  </template>
-  
-  <script>
-  import { ref } from 'vue';
-  import { useMovieStore } from '@/stores/movieStore';
-  
-  export default {
-    setup() {
-      const userGuess = ref('');
-      const movieStore = useMovieStore();
-  
-      const submitGuess = () => {
-  // Retrieve the correct title from localStorage
-  const correctTitle = localStorage.getItem('results');
-  
-  if (!correctTitle) {
-    console.error('No correct title found in localStorage.');
-    return;
-  }
+  <div class="guess-form">
+    <div class="close-button" @click="closeForm">✖️</div> <!-- Stylish X as close button -->
+    <img :src="item.image" alt="Backdrop" class="backdrop">
+    <form @submit.prevent="submitGuess">
+      <input type="text" v-model="guess" placeholder="Guess the title">
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</template>
 
-  // Normalize input for comparison (e.g., lowercase, trim spaces)
-  const normalizedGuess = userGuess.value.trim().toLowerCase();
-  const normalizedCorrectTitle = correctTitle.trim().toLowerCase();
-
-  // Compare the guess with the correct answer
-  if (normalizedGuess === normalizedCorrectTitle) {
-    alert('Bravo! Vous avez deviné correctement.');
-  } else {
-    alert('Dommage! Mauvaise réponse. Essayez encore.');
+<script>
+export default {
+  props: {
+    item: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    return {
+      guess: ''
+    };
+  },
+  methods: {
+    submitGuess() {
+      this.$emit('guess-made', { id: this.item.id, guess: this.guess });
+      this.guess = ''; // Reset guess input
+    },
+    closeForm() {
+      this.$emit('close-form'); // Emit an event to signal form should be closed
+    }
   }
 };
-  
-      return { userGuess, submitGuess };
-    },
-  };
-  </script>
-  
+</script>
+
+<style scoped>
+.backdrop {
+  width: 100%;
+  opacity: 0.8;
+}
+.guess-form {
+  position: relative;
+}
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 1000;
+  padding: 5px;
+}
+</style>

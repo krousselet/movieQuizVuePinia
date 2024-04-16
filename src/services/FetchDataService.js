@@ -18,8 +18,7 @@ class FetchDataService {
       return response.data.results.map((item) => ({
         title: item.title || item.name,  // For movies use title, for TV series use name
         id: item.id,
-        backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w300${item.backdrop_path}` : null,
-        // Additional fields are fetched separately
+        backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w300${item.backdrop_path}` : 'Un problème est survenu',
       }));
     } catch (error) {
       console.error(`Error fetching data from TMDB: ${error}`);
@@ -37,7 +36,7 @@ class FetchDataService {
       ...(type === 'movie' ? { 'release_date.lte': new Date().toISOString().split('T')[0] } : { 'air_date.lte': new Date().toISOString().split('T')[0] }),
       with_original_language: 'en'
     };
-    return this.fetchTMDB(`/discover/${type}`, params);
+    return this.fetchTMDB(`/popular/${type}`, params);
   }
 
   async fetchDetails(type, id) {
